@@ -9,15 +9,18 @@ function initOptions() {
   // get options sheet
   var optionsSheet = _ss.setActiveSheet(getOptionsSheet());
 
-  var data = optionsSheet.getRange(1, optionsSheet.getLastColumn() - 1, optionsSheet.getLastRow() - 1).getValues();
+  var data = optionsSheet.getRange(1, 1, optionsSheet.getLastRow(), optionsSheet.getLastColumn()).getValues();
   data.forEach(function(row) {
     var key = row.shift();
+    row = row.filter(function(a) {return a});
     OPTIONS[key] = row.length > 1 ? row : row[0];
   });
+  
+  _ss.setActiveSheet(currentSheet);
 }
 
 function getOptionsSheet() {
-  var sheets = _ss.getSheets();
+  var sheets = SpreadsheetApp.getActiveSpreadsheet().getSheets();
   for (var i = 0; i < sheets.length; i++) {
     if (sheets[i].getName().toLowerCase() === 'options')
       return sheets[i];
