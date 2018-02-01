@@ -3,10 +3,6 @@ var OPTIONS = {};
 function initOptions() {
   var _ss = SpreadsheetApp.getActiveSpreadsheet();
 
-  // cache current active sheet
-  var currentSheet = _ss.getActiveSheet();
-
-  // get options sheet
   var optionsSheet = _ss.setActiveSheet(getOptionsSheet());
 
   var data = optionsSheet.getRange(1, 1, optionsSheet.getLastRow(), optionsSheet.getLastColumn()).getValues();
@@ -15,8 +11,8 @@ function initOptions() {
     row = row.filter(function(a) {return a});
     OPTIONS[key] = row.length > 1 ? row : row[0];
   });
-  
-  _ss.setActiveSheet(currentSheet);
+
+  _ss.insertSheet(OPTIONS.datesRange.join(' : '));
 }
 
 function getOptionsSheet() {
