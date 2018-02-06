@@ -11,8 +11,15 @@ function initOptions() {
     row = row.filter(function(a) {return a});
     OPTIONS[key] = row.length > 1 ? row : row[0];
   });
+  
+  OPTIONS.datesRange = OPTIONS.datesRange.map(function (date) {
+    date.setHours(date.getHours() - 1 * date.getTimezoneOffset() / 60);
+    return date;
+  });
 
-  _ss.insertSheet(OPTIONS.datesRange.join(' : '));
+  var sheetName = OPTIONS.datesRange.map(formatDate).join(' : ');
+  _ss.deleteSheet(_ss.getSheetByName(sheetName));
+  _ss.insertSheet(sheetName);
 }
 
 function getOptionsSheet() {
