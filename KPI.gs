@@ -26,6 +26,13 @@ var KPI = [
   {
     code: 'OVERTIME_SPENT',
     name: 'Количество времени списанного вне работы'
+  },
+  {
+    code: 'TOTAL',
+    name: 'Итог KPI',
+    formula: function() {
+      return '=(R[0]C[-4]+R[0]C[-3]+R[0]C[-2]*5/(' + OPTIONS.workingDaysCount + '*8))/3';
+    }
   }
 ];
 
@@ -37,6 +44,9 @@ function processKPIs() {
     user.kpis = {};
 
     KPI.forEach(function(kpi) {
+      if (kpi.formula)
+        return sheet.getRange(rowI, columnI++).setFormulaR1C1(kpi.formula());
+
       var kpiValue = getUserKPI(user, kpi.code);
       user.kpis[kpi] = kpiValue;
       sheet.getRange(rowI, columnI++).setValue(kpiValue);
@@ -77,7 +87,7 @@ function getUserKPI(user, kpi) {
     case 'OVERTIME_SPENT':
       return getOvertimeSpent(user);
       break;
-      
+
     default:
       return 'Unknown KPI';
       break;
