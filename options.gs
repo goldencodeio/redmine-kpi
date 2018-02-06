@@ -18,7 +18,8 @@ function initOptions() {
   });
 
   var sheetName = OPTIONS.datesRange.map(formatDate).join(' : ');
-  _ss.deleteSheet(_ss.getSheetByName(sheetName));
+  var existingSheet = _ss.getSheetByName(sheetName);
+  if (existingSheet) _ss.deleteSheet(existingSheet);
   _ss.insertSheet(sheetName);
 }
 

@@ -140,9 +140,22 @@ function getBossRatingAverage(user) {
 }
 
 function getTimeSpent(user) {
-  return 1;
+  var res = APIRequest('time_entries', {query: [
+    {key: 'user_id', value: user.id},
+    {key: 'spent_on', value: getDateRage()}
+  ]});
+  return res.time_entries.reduce(function(a, c) {
+    return a + c.hours;
+  }, 0);
 }
 
 function getOvertimeSpent(user) {
-  return 1;
+  var res = APIRequest('time_entries', {query: [
+    {key: 'user_id', value: user.id},
+    {key: 'spent_on', value: getDateRage()},
+    {key: 'cf_19', value: '1'}
+  ]});
+  return res.time_entries.reduce(function(a, c) {
+    return a + c.hours;
+  }, 0);
 }
