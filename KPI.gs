@@ -94,19 +94,49 @@ function getIssuesCountByUser(user) {
 }
 
 function getIssuesClientRatingCount(user) {
-  return 1;
+  var res = APIRequest('issues', {query: [
+    {key: 'assigned_to_id', value: user.id},
+    {key: 'status_id', value: 'closed'},
+    {key: 'closed_on', value: getDateRage()},
+    {key: 'cf_7', value: '*'}
+  ]});
+  return res.issues.length;
 }
 
 function getIssuesBossRatingCount(user) {
-  return 1;
+  var res = APIRequest('issues', {query: [
+    {key: 'assigned_to_id', value: user.id},
+    {key: 'status_id', value: 'closed'},
+    {key: 'closed_on', value: getDateRage()},
+    {key: 'cf_6', value: '*'}
+  ]});
+  return res.issues.length;
 }
 
 function getClientRatingAverage(user) {
-  return 1;
+  var res = APIRequest('issues', {query: [
+    {key: 'assigned_to_id', value: user.id},
+    {key: 'status_id', value: 'closed'},
+    {key: 'closed_on', value: getDateRage()},
+    {key: 'cf_7', value: '*'}
+  ]});
+  var sum = res.issues.reduce(function(a, c) {
+    return a + parseInt(c.custom_fields.find(function(i) {return i.id === 7}).value, 10);
+  }, 0);
+  return res.issues.length ? sum / res.issues.length : 0;
 }
 
 function getBossRatingAverage(user) {
-  return 1;
+  var res = APIRequest('issues', {query: [
+    {key: 'assigned_to_id', value: user.id},
+    {key: 'status_id', value: 'closed'},
+    {key: 'closed_on', value: getDateRage()},
+    {key: 'cf_6', value: '*'}
+  ]});
+  var sum = res.issues.reduce(function(a, c) {
+    return a + parseInt(c.custom_fields.find(function(i) {return i.id === 6}).value, 10);
+  }, 0);
+  return res.issues.length ? sum / res.issues.length : 0;
 }
 
 function getTimeSpent(user) {
