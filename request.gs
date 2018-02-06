@@ -1,14 +1,30 @@
 function APIRequest(reqUrl, options) {
-  var url = encodeURI('http://redmine.zolotoykod.ru/' + reqUrl + '.json?key=' + OPTIONS.apiKey + '&limit=100');
+  var url = 'http://redmine.zolotoykod.ru/' + reqUrl + '.json?key=' + OPTIONS.apiKey + '&limit=100';
   if (!options) options = {};
-  if (options.query) {
+  if (options.query)
     options.query.forEach(function(item) {
-      url += '&' + encodeURIComponent(item.key) + '=' + encodeURIComponent(item.value);
+      url += '&' + item.key + '=' + item.value;
     });
-    delete options.query;
-  }
 
-  var response = UrlFetchApp.fetch(url, options);
-  // TODO: catch api errors
-  return JSON.parse(response.getContentText());
+  var response = UrlFetchApp.fetch(encodeURI(url), options);
+
+  // catch server errors
+  if (response.getResponseCode() >= 400)
+    throw response.getContentText();
+
+  var result = JSON.parse(response.getContentText());
+
+  if (result[reqUrl].length === 100) {
+    var newOptions = Object.assign({query: []}, options);
+    var offsetOptionsIndex = newOptions.query.findIndex(function(i) {return i.key === 'offset'});
+    if (offsetOptionsIndex > -1)
+      newOptions.query[offsetOptionsIndex].value += 100;
+    else
+      newOptions.query.push({key: 'offset', value: 100});
+    
+    var newResult = APIRequest(reqUrl, newOptions);
+    result[reqUrl] = result[reqUrl].concat(newResult[reqUrl]);
+  }
+  
+  return result;
 }
