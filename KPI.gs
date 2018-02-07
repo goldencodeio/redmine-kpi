@@ -118,7 +118,7 @@ function getIssuesBossRatingCount(user) {
     {key: 'assigned_to_id', value: user.id},
     {key: 'status_id', value: 'closed'},
     {key: 'closed_on', value: getDateRage()},
-    {key: 'cf_6', value: '*'}
+    {key: 'cf_8', value: '*'}
   ]});
   return res.issues.length;
 }
@@ -141,10 +141,10 @@ function getBossRatingAverage(user) {
     {key: 'assigned_to_id', value: user.id},
     {key: 'status_id', value: 'closed'},
     {key: 'closed_on', value: getDateRage()},
-    {key: 'cf_6', value: '*'}
+    {key: 'cf_8', value: '*'}
   ]});
   var sum = res.issues.reduce(function(a, c) {
-    return a + parseInt(c.custom_fields.find(function(i) {return i.id === 6}).value, 10);
+    return a + parseInt(c.custom_fields.find(function(i) {return i.id === 8}).value, 10);
   }, 0);
   return res.issues.length ? sum / res.issues.length : 0;
 }
